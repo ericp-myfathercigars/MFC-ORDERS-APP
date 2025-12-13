@@ -1,0 +1,33 @@
+{
+  "comparison_period": "Jan 1 - Dec 8",
+  "state_totals": {
+    "AL": {
+      "sales_2025": 411552.79,
+      "sales_2024": 351631.47,
+      "change": 59921.32000000001,
+      "pct_change": 17.040943462767995
+    },
+    "GA": {
+      "sales_2025": 668193.7,
+      "sales_2024": 583921.25,
+      "change": 84272.44999999995,
+      "pct_change": 14.432160158583022
+    },
+    "MS": {
+      "sales_2025": 83948.14,
+      "sales_2024": 106426.78,
+      "change": -22478.64,
+      "pct_change": -21.121225315658332
+    },
+    "TN": {
+      "sales_2025": 652527.37,
+      "sales_2024": 558522.0,
+      "change": 94005.37,
+      "pct_change": 16.83109528362356
+    }
+  },
+  "territory_total_2025": 1816222.0,
+  "territory_total_2024": 1600501.5,
+  "territory_change": 215720.5,
+  "territory_pct_change": 13.478306643261503
+}
