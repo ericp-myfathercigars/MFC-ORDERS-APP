@@ -1,93 +1,217 @@
-# MFC Orders - My Father Cigars Field Sales App
+# MFC Orders PWA - Implementation Guide
 
-A Progressive Web App for managing orders in the field with offline support.
+## What This Update Includes
 
-## Features
+### Bug Fixes:
+1. ✅ **Fixed 404 favicon error** - Removed broken favicon reference
+2. ✅ **Updated PWA meta tags** - Replaced deprecated tags with proper mobile-web-app-capable
+3. ✅ **Implemented install prompt** - Added banner and proper beforeinstallprompt handling
+4. ✅ **Disabled problematic service worker** - Service worker now disabled by default (can be re-enabled if needed)
+5. ✅ **Added proper error handling** - Better console logging and error management
 
-- **Order Management**: Create, edit, and track orders
-- **Customer Database**: Manage customers with tier classifications (Main, High, Medium, Low)
-- **Product Catalog**: Complete MFC product lineup with box sizes
-- **Offline Support**: Works without internet connection
-- **PDF Generation**: Export orders as downloadable files
-- **Sales Reports**: Track performance with comprehensive reporting
-- **Mobile-First Design**: Optimized for field use on phones and tablets
+### New Features:
+6. ✅ **Order Search & Filter** - Comprehensive search by customer name
+7. ✅ **Date Range Filtering** - Today, This Week, This Month, YTD, or Custom dates
+8. ✅ **Multiple Sort Options** - Sort by date, customer name, or order amount
+9. ✅ **Order Summary Display** - Shows count and total for filtered results
 
-## Installation on GitHub Pages
+## Order Search Features
 
-1. **Upload to GitHub**:
-   - All files should be in the root of your repository
-   - Make sure the repository is set to "Public"
+The Orders tab now includes powerful search and filtering:
 
-2. **Enable GitHub Pages**:
-   - Go to repository Settings
-   - Navigate to "Pages" in the left sidebar
-   - Under "Source", select "main" branch
-   - Click "Save"
-   - Your app will be live at: `https://yourusername.github.io/repository-name`
+**Search by Customer:**
+- Type any part of a customer name in the search box
+- Results update instantly as you type
+- Case-insensitive matching
 
-3. **Install on Mobile Device**:
-   - Open the GitHub Pages URL on your phone/tablet
-   - For iOS: Tap the Share button → "Add to Home Screen"
-   - For Android: Tap the menu (3 dots) → "Add to Home Screen"
+**Filter by Date:**
+- All Time (default)
+- Today
+- This Week
+- This Month
+- Year to Date
+- Custom Date Range (pick specific start/end dates)
 
-## Box Size Reference
+**Sort Orders:**
+- Newest First (default)
+- Oldest First
+- Customer A-Z
+- Customer Z-A
+- Highest Amount
+- Lowest Amount
 
-The app includes the correct box conversions:
-- **23 units per box**: My Father, My Father Connecticut, Le Bijou, My Father Judge
-- **20 units per box**: All other My Father Cigars lines
+**Summary Display:**
+- Shows number of orders matching filters
+- Shows total dollar amount of filtered orders
+- Updates automatically as you search/filter
 
-## Initial Setup
+## Files to Update in Your GitHub Repository
 
-The app comes pre-loaded with sample data including:
-- 5 sample customers (The Cigar Room, Tinder Box, Spring Street, etc.)
-- 7 sample products from the MFC lineup
-- Tier classifications (Main, High, Medium, Low)
+Replace these files in your repository:
 
-You can customize this data directly in the app or modify the `initializeSampleData()` function in `app.js`.
+### Required Updates:
+1. **index.html** - Main app file with fixed meta tags and new search UI
+2. **app.js** - Application logic with search and filter functionality
+3. **pwa.js** - PWA functionality with install prompt
+4. **manifest.json** - Proper PWA configuration
+5. **styles.css** - Enhanced styling with install banner and filter controls
 
-## Usage
+### Icon Files Needed:
+You need two icon files: `icon-192.png` and `icon-512.png`
 
-### Creating an Order
-1. Click "New Order"
-2. Select customer
-3. Add items (product, quantity, price)
-4. Save order
+**Option A - Quick Method (Simple Icons):**
+1. Open `create-icons.html` in your web browser
+2. It will show two download links
+3. Click both links to download the icons
+4. Upload both PNG files to your GitHub repository
 
-### Offline Mode
-- Orders created offline are stored locally
-- Sync status shows "Offline" when no internet connection
-- All data persists using browser localStorage
+**Option B - Professional Icons (Recommended):**
+Create custom icons with your company branding using:
+- Canva (free)
+- Photoshop/Illustrator
+- Online icon generators like favicon.io
 
-### Reports
-- View sales summaries
-- Export orders to CSV
-- Generate sales reports
+Icon specifications:
+- 192x192px for mobile home screen
+- 512x512px for splash screen
+- Square format (1:1 ratio)
+- PNG format with transparent or solid background
+- Simple, recognizable design (works at small sizes)
 
-## Data Storage
+## Step-by-Step GitHub Update
 
-All data is stored locally in your browser using localStorage. This means:
-- Data persists between sessions
-- Works completely offline
-- No external database required
-- Clear browser data will reset the app
+### 1. Navigate to Your Repository
+Go to: `https://github.com/[your-username]/mfc-orders-app`
 
-## Browser Compatibility
+### 2. Update Each File
 
-Works on:
-- iOS Safari 12+
-- Chrome (mobile & desktop)
-- Firefox (mobile & desktop)
-- Edge
+For **each** of the 5 main files (index.html, app.js, pwa.js, manifest.json, styles.css):
 
-## Customization
+1. Click on the filename in GitHub
+2. Click the pencil icon (✏️) to edit
+3. Select all content (Ctrl+A / Cmd+A)
+4. Delete it
+5. Copy the entire contents from the new file
+6. Paste into GitHub
+7. Scroll to bottom, add commit message: "Add search features and fix PWA issues"
+8. Click "Commit changes"
 
-To add your actual customer and product data:
+### 3. Add Icon Files
 
-1. Open `app.js`
-2. Find the `initializeSampleData()` function
-3. Replace the sample customers and products arrays with your actual data
-4. Or use the app interface to manually add/edit data
+1. Click "Add file" → "Upload files"
+2. Drag both icon PNG files into the upload area
+3. Commit message: "Add app icons"
+4. Click "Commit changes"
+
+### 4. Generate Icons (if needed)
+
+If you're using Option A:
+1. Download `create-icons.html` from this package
+2. Open it in any web browser (Chrome, Firefox, Safari)
+3. Two download links will appear automatically
+4. Click each link to download icon-192.png and icon-512.png
+5. Upload both to your GitHub repository
+
+## Testing the Updates
+
+After updating all files in GitHub:
+
+1. **Wait 2-3 minutes** for GitHub Pages to rebuild
+2. **Clear your browser cache**:
+   - Chrome: Ctrl+Shift+Delete (Cmd+Shift+Delete on Mac)
+   - Select "Cached images and files"
+   - Click "Clear data"
+3. **Visit your app URL** (hard refresh with Ctrl+F5 or Cmd+Shift+R)
+4. **Open Developer Console** (F12) to verify no errors
+
+### Expected Console Output:
+```
+Install prompt available
+App can be installed
+Service worker registration disabled - app will work online only
+```
+
+### No More Errors For:
+- ❌ Failed to load resource: favicon.ico
+- ❌ meta name="apple-mobile-web-app-capable" deprecated
+- ❌ Banner not shown: beforeinstallpromptevent.prompt()
+
+## Install Banner Behavior
+
+When you visit the app on a mobile device or desktop Chrome:
+
+1. **First visit**: Install banner appears at top if app is installable
+2. **Install button**: Triggers native browser install prompt
+3. **Later button**: Hides banner for 7 days
+4. **Already installed**: Banner won't show if app is already installed
+
+## Service Worker Status
+
+The service worker is **currently disabled** because it was causing 404 errors. The app will:
+- ✅ Work perfectly online
+- ✅ Be installable as a PWA
+- ✅ Look like a native app when installed
+- ❌ Not work offline (requires service worker)
+
+**To enable offline functionality later:**
+1. Open `pwa.js`
+2. Find line: `// registerServiceWorker();`
+3. Remove the `//` to uncomment: `registerServiceWorker();`
+4. Create proper `sw.js` file with correct file paths
+
+## Troubleshooting
+
+### Icons still not loading?
+- Check that icon files are named exactly: `icon-192.png` and `icon-512.png`
+- Verify they're in the root directory of your repository
+- Clear browser cache and hard refresh
+
+### Install banner not showing?
+- Only works on HTTPS (GitHub Pages is HTTPS by default)
+- Won't show if app is already installed
+- Won't show if dismissed in last 7 days
+- Some browsers don't support PWA installation
+
+### Console still showing errors?
+- Make sure ALL 4 files were updated (index.html, pwa.js, manifest.json, styles.css)
+- Wait full 2-3 minutes for GitHub Pages to deploy
+- Clear browser cache completely
+- Try incognito/private browsing mode
+
+## Mobile Installation
+
+### iOS (Safari):
+1. Open app URL in Safari
+2. Tap Share button (box with arrow)
+3. Scroll down and tap "Add to Home Screen"
+4. Confirm
+
+### Android (Chrome):
+1. Open app URL in Chrome
+2. Tap the install banner that appears
+3. Or tap menu (⋮) → "Install app"
+4. Confirm
+
+### Desktop (Chrome/Edge):
+1. Look for install icon in address bar
+2. Or click menu → "Install MFC Orders"
+3. App will open in its own window
+
+## Next Steps
+
+After implementing these fixes:
+
+1. Test the app thoroughly on your device
+2. Verify install functionality works
+3. Check that all features still work correctly
+4. Let me know if you encounter any issues or want to enable offline mode
 
 ## Support
 
-For issues or questions, refer to the GitHub repository issues page.
+If you run into any issues:
+- Check the browser console for errors (F12)
+- Verify all files were updated correctly
+- Make sure icon files were uploaded
+- Try clearing cache and hard refresh
+
+The app should now install cleanly without console errors and provide a professional PWA experience!

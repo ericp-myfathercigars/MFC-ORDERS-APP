@@ -1,0 +1,50 @@
+{
+  "name": "MFC Orders - Territory Sales Management",
+  "short_name": "MFC Orders",
+  "description": "My Father Cigars territory sales and order management application",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#1a1a1a",
+  "theme_color": "#8B4513",
+  "orientation": "portrait-primary",
+  "scope": "./",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "productivity"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "New Order",
+      "short_name": "New Order",
+      "description": "Create a new customer order",
+      "url": "./?view=new-order",
+      "icons": []
+    },
+    {
+      "name": "Customers",
+      "short_name": "Customers",
+      "description": "View customer directory",
+      "url": "./?view=customers",
+      "icons": []
+    },
+    {
+      "name": "Reports",
+      "short_name": "Reports",
+      "description": "View sales reports",
+      "url": "./?view=reports",
+      "icons": []
+    }
+  ]
+}

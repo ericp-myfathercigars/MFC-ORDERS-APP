@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MFC Orders">
+    <meta name="theme-color" content="#8B4513">
+    
+    <title>MFC Orders</title>
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Install Banner (shown when PWA can be installed) -->
+    <div id="installBanner" class="install-banner" style="display: none;">
+        <div class="install-content">
+            <span>📱 Install MFC Orders App</span>
+            <div class="install-buttons">
+                <button id="installButton" class="btn-primary">Install</button>
+                <button id="dismissInstall" class="btn-secondary">Later</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+        <h1>🎯 MFC Orders</h1>
+        <div class="subtitle">My Father Cigars Territory Management</div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+        <button class="nav-tab active" data-view="orders">Orders</button>
+        <button class="nav-tab" data-view="new-order">New Order</button>
+        <button class="nav-tab" data-view="customers">Customers</button>
+        <button class="nav-tab" data-view="products">Products</button>
+        <button class="nav-tab" data-view="reports">Reports</button>
+    </div>
+
+    <div class="container">
+        <!-- Orders View -->
+        <div id="orders-view" class="view active">
+            <div class="card">
+                <h2>Recent Orders</h2>
+                
+                <!-- Search and Filter Controls -->
+                <div class="orders-controls">
+                    <input type="text" id="order-search" placeholder="Search by customer name..." class="search-input">
+                    
+                    <div class="filter-row">
+                        <select id="order-date-filter" class="filter-select">
+                            <option value="all">All Time</option>
+                            <option value="today">Today</option>
+                            <option value="week">This Week</option>
+                            <option value="month">This Month</option>
+                            <option value="ytd">Year to Date</option>
+                            <option value="custom">Custom Date Range</option>
+                        </select>
+                        
+                        <select id="order-sort" class="filter-select">
+                            <option value="date-desc">Newest First</option>
+                            <option value="date-asc">Oldest First</option>
+                            <option value="customer-asc">Customer A-Z</option>
+                            <option value="customer-desc">Customer Z-A</option>
+                            <option value="amount-desc">Highest Amount</option>
+                            <option value="amount-asc">Lowest Amount</option>
+                        </select>
+                    </div>
+                    
+                    <div id="custom-date-range" class="custom-date-range" style="display: none;">
+                        <input type="date" id="date-from" class="date-input">
+                        <span>to</span>
+                        <input type="date" id="date-to" class="date-input">
+                        <button id="apply-date-filter" class="btn-secondary btn-sm">Apply</button>
+                    </div>
+                    
+                    <div class="orders-summary">
+                        <span id="orders-count">0 orders</span>
+                        <span id="orders-total">Total: $0.00</span>
+                    </div>
+                </div>
+                
+                <div id="orders-list"></div>
+                
+                <div id="no-orders-message" class="no-results" style="display: none;">
+                    <p>No orders found matching your search.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Order View -->
+        <div id="new-order-view" class="view">
+            <div class="card">
+                <h2>Create New Order</h2>
+                <form id="order-form">
+                    <div class="form-group">
+                        <label for="customer-select">Customer</label>
+                        <select id="customer-select" required>
+                            <option value="">Select Customer...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="order-date">Order Date</label>
+                        <input type="date" id="order-date" required>
+                    </div>
+
+                    <div class="line-items">
+                        <h3>Order Items</h3>
+                        <div id="line-items-container"></div>
+                        <button type="button" class="btn-secondary" id="add-line-item">+ Add Item</button>
+                    </div>
+
+                    <div class="order-summary">
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span id="order-subtotal">$0.00</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total:</span>
+                            <span id="order-total">$0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Save Order</button>
+                        <button type="button" class="btn-secondary" id="cancel-order">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Customers View -->
+        <div id="customers-view" class="view">
+            <div class="card">
+                <h2>Customer Directory</h2>
+                <input type="text" id="customer-search" placeholder="Search customers..." class="search-input">
+                <div id="customers-list"></div>
+            </div>
+        </div>
+
+        <!-- Products View -->
+        <div id="products-view" class="view">
+            <div class="card">
+                <h2>Product Catalog</h2>
+                <input type="text" id="product-search" placeholder="Search products..." class="search-input">
+                <div id="products-list"></div>
+            </div>
+        </div>
+
+        <!-- Reports View -->
+        <div id="reports-view" class="view">
+            <div class="card">
+                <h2>Sales Reports</h2>
+                <div class="report-options">
+                    <button class="btn-primary report-btn" data-report="sales-summary">Sales Summary</button>
+                    <button class="btn-primary report-btn" data-report="customer-analysis">Customer Analysis</button>
+                    <button class="btn-primary report-btn" data-report="product-performance">Product Performance</button>
+                </div>
+                <div id="report-output"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="mfc-data.js"></script>
+    <script src="app.js"></script>
+    <script src="pwa.js"></script>
+</body>
+</html>
