@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>MFC Orders</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <nav class="main-nav">
+            <div class="nav-brand">
+                <h1>MFC Orders</h1>
+                <div class="sync-status">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Synced</span>
+                </div>
+            </div>
+            <div class="nav-menu">
+                <button class="nav-btn active" data-view="orders">Orders</button>
+                <button class="nav-btn" data-view="customers">Customers</button>
+                <button class="nav-btn" data-view="products">Products</button>
+                <button class="nav-btn" data-view="analytics">Analytics</button>
+                <button class="nav-btn" data-view="reports">Reports</button>
+            </div>
+        </nav>
+
+        <div class="content">
+            <!-- Orders View -->
+            <div id="ordersView" class="view active">
+                <div class="view-header">
+                    <h2>Orders</h2>
+                    <button class="btn btn-primary" id="newOrderBtn">+ New Order</button>
+                </div>
+                <div id="ordersList"></div>
+            </div>
+
+            <!-- Customers View -->
+            <div id="customersView" class="view">
+                <div class="view-header">
+                    <h2>Customers</h2>
+                    <button class="btn btn-primary" id="newCustomerBtn">+ New Customer</button>
+                </div>
+                
+                <div class="filters-section">
+                    <div class="filter-group">
+                        <label>Filter by State:</label>
+                        <div class="state-filters">
+                            <button class="state-btn active" data-state="all">All</button>
+                            <button class="state-btn" data-state="AL">AL</button>
+                            <button class="state-btn" data-state="GA">GA</button>
+                            <button class="state-btn" data-state="TN">TN</button>
+                            <button class="state-btn" data-state="MS">MS</button>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label>Filter by Last Visit:</label>
+                        <div class="visit-filters">
+                            <button class="visit-filter-btn active" data-visit="all">All</button>
+                            <button class="visit-filter-btn" data-visit="30">30+ days</button>
+                            <button class="visit-filter-btn" data-visit="60">60+ days</button>
+                            <button class="visit-filter-btn" data-visit="90">90+ days</button>
+                            <button class="visit-filter-btn" data-visit="never">Never visited</button>
+                        </div>
+                    </div>
+                    
+                    <div class="search-box">
+                        <input type="text" id="customerSearch" placeholder="Search customers...">
+                    </div>
+                </div>
+                
+                <div id="customersGrid" class="customers-grid"></div>
+            </div>
+
+            <!-- Products View -->
+            <div id="productsView" class="view">
+                <div class="view-header">
+                    <h2>Products</h2>
+                    <button class="btn btn-primary" id="newProductBtn">+ New Product</button>
+                </div>
+                
+                <div class="filters-section">
+                    <div class="search-box">
+                        <input type="text" id="productSearch" placeholder="Search products...">
+                    </div>
+                    <div class="filter-group">
+                        <label>
+                            <input type="checkbox" id="showActiveOnly" checked>
+                            Show active products only
+                        </label>
+                    </div>
+                </div>
+                
+                <div id="productsGrid" class="products-grid"></div>
+            </div>
+
+            <!-- Analytics View -->
+            <div id="analyticsView" class="view">
+                <div class="view-header">
+                    <h2>Analytics</h2>
+                </div>
+                
+                <div class="analytics-section">
+                    <h3>Historical Data Import</h3>
+                    <p>Import historical order data to enable analytics and customer purchase history.</p>
+                    <button class="btn btn-secondary" id="importHistoricalBtn">Import Historical Data</button>
+                    
+                    <h3 style="margin-top: 2rem;">Year-over-Year Comparison</h3>
+                    <p>Import year-over-year comparison data to see territory performance trends.</p>
+                    <button class="btn btn-secondary" id="importYoYBtn">Import YoY Data</button>
+                </div>
+                
+                <div id="yoyComparison" class="analytics-section" style="margin-top: 2rem;"></div>
+                
+                <div class="analytics-section" style="margin-top: 2rem;">
+                    <h3>Customer Purchase History</h3>
+                    <div class="search-box">
+                        <input type="text" id="historyCustomerSearch" placeholder="Search customer name...">
+                        <button class="btn btn-primary" id="searchHistoryBtn">Search</button>
+                    </div>
+                    <div id="customerHistoryResults"></div>
+                </div>
+                
+                <div id="top10Section" class="analytics-section" style="margin-top: 2rem; display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3>Top 10 SKUs Analysis</h3>
+                        <button class="btn btn-secondary" id="exportTop10PDF">Export as PDF</button>
+                    </div>
+                    <div id="top10Tables"></div>
+                </div>
+                
+                <!-- Product Usage Report Section -->
+                <div id="productUsageSection" class="analytics-section" style="margin-top: 2rem; display: none;">
+                    <h3 style="margin-bottom: 1rem;">📦 Product Usage Report</h3>
+                    <div id="productUsageResults"></div>
+                </div>
+                
+                <div id="skuDropoffSection" class="analytics-section" style="margin-top: 2rem; display: none;">
+                    <h3>SKU Dropoffs (First Half vs Second Half 2025)</h3>
+                    <p style="margin-bottom: 1rem; color: var(--text-secondary);">Products ordered in first half of 2025 but not in second half</p>
+                    <div id="skuDropoffResults"></div>
+                </div>
+                
+                <div id="reorderPredictionSection" class="analytics-section" style="margin-top: 2rem; display: none;">
+                    <h3>Reorder Predictions</h3>
+                    <p style="margin-bottom: 1rem; color: var(--text-secondary);">Based on historical ordering patterns</p>
+                    <div id="reorderPredictionResults"></div>
+                </div>
+                
+                <div class="analytics-charts" style="margin-top: 2rem;">
+                    <div class="chart-container">
+                        <h3>Top Products</h3>
+                        <div id="topProductsChart"></div>
+                    </div>
+                    <div class="chart-container">
+                        <h3>Monthly Sales Trend</h3>
+                        <div id="monthlySalesChart"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports View -->
+            <div id="reportsView" class="view">
+                <div class="view-header">
+                    <h2>Reports</h2>
+                </div>
+                
+                <div class="report-actions">
+                    <button class="btn btn-primary" id="importOrdersBtn">📤 Import Orders (JSON)</button>
+                    <button class="btn btn-secondary" id="downloadAllOrdersCSV">📥 Download All Orders (CSV)</button>
+                    <button class="btn btn-secondary" id="downloadAllOrdersJSON">📥 Download All Orders (JSON)</button>
+                </div>
+                
+                <!-- Date Range Export -->
+                <div style="margin: 1.5rem 0; padding: 1.5rem; background: #f5f5f5; border-radius: 12px; border: 2px solid #e0e0e0;">
+                    <h3 style="margin-bottom: 1rem;">📅 Export Orders by Date Range</h3>
+                    <div style="display: flex; gap: 1rem; align-items: end; flex-wrap: wrap;">
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Start Date</label>
+                            <input type="date" id="exportStartDate" style="padding: 0.5rem; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem;">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">End Date</label>
+                            <input type="date" id="exportEndDate" style="padding: 0.5rem; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem;">
+                        </div>
+                        <button class="btn btn-primary" onclick="app.exportOrdersByDateRange()">📥 Export to CSV</button>
+                    </div>
+                    <p style="margin-top: 0.75rem; font-size: 0.875rem; color: #666;">
+                        💡 Exports all orders within the selected date range to a CSV file for your office reports.
+                    </p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>2026 YTD</h3>
+                        <div class="stat-value" id="sales2026">$0.00</div>
+                        <div class="stat-label" id="orders2026">0 orders</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>2025 Total</h3>
+                        <div class="stat-value" id="sales2025">$0.00</div>
+                        <div class="stat-label" id="orders2025">0 orders</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Top Customer</h3>
+                        <div class="stat-value" style="font-size: 1.25rem;" id="topCustomer">—</div>
+                    </div>
+                </div>
+                
+                <div class="stats-grid" style="margin-top: 1rem;">
+                    <div class="stat-card">
+                        <h3>Today</h3>
+                        <div class="stat-value" id="todaySales">$0.00</div>
+                        <div class="stat-label" id="todayOrders">0 orders</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>This Week</h3>
+                        <div class="stat-value" id="weekSales">$0.00</div>
+                        <div class="stat-label" id="weekOrders">0 orders</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>This Month</h3>
+                        <div class="stat-value" id="monthSales">$0.00</div>
+                        <div class="stat-label" id="monthOrders">0 orders</div>
+                    </div>
+                </div>
+                
+                <div id="monthlyOrdersContainer" style="margin-top: 2rem;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Modal -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2 id="orderModalTitle">New Order</h2>
+                <button class="modal-close" id="closeOrderModal">&times;</button>
+            </div>
+            <form id="orderForm">
+                <div class="form-section">
+                    <h3>Customer Information</h3>
+                    <div class="state-filters-compact">
+                        <button type="button" class="state-btn-compact active" data-state="all">All</button>
+                        <button type="button" class="state-btn-compact" data-state="AL">AL</button>
+                        <button type="button" class="state-btn-compact" data-state="GA">GA</button>
+                        <button type="button" class="state-btn-compact" data-state="TN">TN</button>
+                        <button type="button" class="state-btn-compact" data-state="MS">MS</button>
+                    </div>
+                    <div class="search-box">
+                        <input type="text" id="orderCustomerSearch" placeholder="Type to search...">
+                    </div>
+                    <select id="orderCustomer" required>
+                        <option value="">Select customer...</option>
+                    </select>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Order Date</label>
+                        <input type="date" id="orderDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>PO Number (auto-generated, editable)</label>
+                        <input type="text" id="orderPO" placeholder="Auto-generated">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Order Items</h3>
+                    <button type="button" class="btn btn-secondary" id="addItemBtn">+ Add Item</button>
+                    <div id="orderItems"></div>
+                    <div class="order-totals">
+                        <div class="total-row">
+                            <span>Subtotal:</span>
+                            <span id="orderSubtotal">$0.00</span>
+                        </div>
+                        <div class="total-row total-final">
+                            <span>Total:</span>
+                            <span id="orderTotal">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Order Notes (Optional)</label>
+                    <textarea id="orderNotes" rows="3"></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelOrderBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Item Modal -->
+    <div id="itemModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Item</h2>
+                <button class="modal-close" id="closeItemModal">&times;</button>
+            </div>
+            <form id="itemForm">
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="itemCategory" required>
+                        <option value="">Select category...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Product</label>
+                    <select id="itemProduct" required disabled>
+                        <option value="">Select category first...</option>
+                    </select>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Quantity</label>
+                        <input type="number" id="itemQuantity" min="1" value="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Price</label>
+                        <input type="number" id="itemPrice" step="0.01" required>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelItemBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Customer Modal -->
+    <div id="customerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="customerModalTitle">New Customer</h2>
+                <button class="modal-close" id="closeCustomerModal">&times;</button>
+            </div>
+            <form id="customerForm">
+                <div class="form-group">
+                    <label>Business Name</label>
+                    <input type="text" id="customerName" required>
+                </div>
+                <div class="form-group">
+                    <label>Contact Name</label>
+                    <input type="text" id="customerContact">
+                </div>
+                <div class="form-group">
+                    <label>Tier</label>
+                    <select id="customerTier" required>
+                        <option value="Gold">Gold</option>
+                        <option value="Silver">Silver</option>
+                        <option value="Bronze">Bronze</option>
+                    </select>
+                </div>
+                
+                <h3>Shipping Address</h3>
+                <div class="form-group">
+                    <label>Street</label>
+                    <input type="text" id="customerShipStreet" required>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>City</label>
+                        <input type="text" id="customerShipCity" required>
+                    </div>
+                    <div class="form-group">
+                        <label>State</label>
+                        <select id="customerShipState" required>
+                            <option value="AL">AL</option>
+                            <option value="GA">GA</option>
+                            <option value="TN">TN</option>
+                            <option value="MS">MS</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>ZIP</label>
+                        <input type="text" id="customerShipZip" required>
+                    </div>
+                </div>
+                
+                <h3>Billing Address (if different)</h3>
+                <div class="form-group">
+                    <label>Street</label>
+                    <input type="text" id="customerBillStreet">
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>City</label>
+                        <input type="text" id="customerBillCity">
+                    </div>
+                    <div class="form-group">
+                        <label>State</label>
+                        <select id="customerBillState">
+                            <option value="">Same as shipping</option>
+                            <option value="AL">AL</option>
+                            <option value="GA">GA</option>
+                            <option value="TN">TN</option>
+                            <option value="MS">MS</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>ZIP</label>
+                        <input type="text" id="customerBillZip">
+                    </div>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" id="customerPhone">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="customerEmail">
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelCustomerBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Customer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Customer Detail Modal (Visit Tracking) -->
+    <div id="customerDetailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="customerDetailName">Customer Details</h2>
+                <button class="modal-close" id="closeCustomerDetailModal">&times;</button>
+            </div>
+            
+            <div class="customer-detail-section">
+                <h3>Contact Information</h3>
+                <p><strong>Contact:</strong> <span id="customerDetailContact"></span></p>
+                <p><strong>Location:</strong> <span id="customerDetailLocation"></span></p>
+            </div>
+            
+            <div class="customer-detail-section">
+                <h3>Visit Tracking</h3>
+                <p><strong>Last Visit:</strong> <span id="customerLastVisit">Never</span></p>
+                <button class="btn btn-primary" id="markVisitedBtn">Mark as Visited Today</button>
+            </div>
+            
+            <div class="customer-detail-section">
+                <h3>Visit Notes</h3>
+                <textarea id="customerVisitNotes" rows="4" placeholder="Add notes about this customer..."></textarea>
+                <button class="btn btn-secondary" id="saveCustomerNotesBtn">Save Notes</button>
+            </div>
+            
+            <div class="customer-detail-section">
+                <h3>Visit History</h3>
+                <div id="visitHistoryList"></div>
+            </div>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" id="cancelCustomerDetailBtn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="productModalTitle">New Product</h2>
+                <button class="modal-close" id="closeProductModal">&times;</button>
+            </div>
+            <form id="productForm">
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="productCategory" required>
+                        <option value="">Select existing category...</option>
+                    </select>
+                </div>
+                
+                <div id="newCategoryGroup" class="form-group" style="display: none;">
+                    <label>New Category Name</label>
+                    <input type="text" id="newCategoryName" placeholder="Enter new category name">
+                </div>
+                
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" id="productName" required>
+                </div>
+                <div class="form-group">
+                    <label>SKU</label>
+                    <input type="text" id="productSku" required>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Price</label>
+                        <input type="number" id="productPrice" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Box Size</label>
+                        <input type="number" id="productBoxSize" required>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelProductBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="mfc-data.js?v=2"></script>
+    <script src="app.js?v=2"></script>
+    <script src="pwa.js?v=2"></script>
+</body>
+</html>
