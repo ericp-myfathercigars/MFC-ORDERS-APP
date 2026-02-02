@@ -13,7 +13,7 @@
 6. ✅ **Order Search & Filter** - Comprehensive search by customer name
 7. ✅ **Date Range Filtering** - Today, This Week, This Month, YTD, or Custom dates
 8. ✅ **Multiple Sort Options** - Sort by date, customer name, or order amount
-9. ✅ **Order Summary Display** - Shows count and total for filtered results
+9. ✅ **Order Summary Display** - Shows count and to tal for filtered results
 
 ## Order Search Features
 
